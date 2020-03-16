@@ -37,8 +37,7 @@
     exit
   fi
 
-
-  #####################################################################################
+#####################################################################################
   #### Get informations
   dim=$(xdpyinfo | grep dimensions | sed -r 's/^[^0-9]*([0-9]+x[0-9]+).*$/\1/')
   wxh1=$(echo $dim | sed -r 's/x.*//')"x"$(echo $dim | sed -r 's/.*x//')
@@ -58,9 +57,11 @@
       varFull=
       varMULTIMON=
       varCERTOK=
+      varMODEM=
+      varFONTS=
     varLog=
     [ -n "$USER" ] && until xdotool search "xfreerdp-gui" windowactivate key Right Tab 2>/dev/null ; do sleep 0.03; done &
-      FORMULARY=$(yad --center --width=380 \
+      FORMULARY=$(yad --center --width=450 \
           --window-icon="gtk-execute" --image="debian-logo" --item-separator=","                                              \
           --title "xfreerdp-gui"                                                                                              \
           --form                                                                                                              \
@@ -75,6 +76,8 @@
           --field="Multimon":CHK $varMULTIMON 																					  \
           --field="Ignore Cert":CHK $varCERTOK 																					  \
           --field="Full Screen":CHK $varFull                                                                                  \
+          --field="network:modem":CHK $varMODEM                                           \
+          --field="Fonts":CHK $varFONTS                  \
           --field="Show Log":CHK $varLog                                                                                      \
           --button="Cancel":1 --button="Connect":0)
       [ $? != 0 ] && exit
@@ -104,10 +107,22 @@
       else
           CERTOK=""
       fi  
-      varLog=$(echo $FORMULARY | awk -F '|' '{ print $12 }')
-        
+      varMODEM=$(echo $FORMULARY | awk -F '|' '{ print $12 }')
+      if [ "$varMODEM" = "TRUE" ]; then
+          MODEM="/network:modem"
+      else
+          MODEM=""
+      fi
+      varFONTS=$(echo $FORMULARY | awk -F '|' '{ print $13 }')
+      if [ "$varFONTS" = "TRUE" ]; then
+          FONTS="/fonts"
+      else
+          FONTS=""
+      fi
+      varLog=$(echo $FORMULARY | awk -F '|' '{ print $14 }')
+
       RES=$(xfreerdp \
-      				  $MULTIMON  \
+      			$MULTIMON  \
 					  $GEOMETRY  \
 					  /v:"$SERVER":$PORT \
                       /u:"$LOGIN" \
@@ -116,26 +131,37 @@
                       /from-stdin \
                       /decorations /window-drag \
                       /compression 	\
+                      $MODEM \
+                      $FONTS \
                       $CERTOK \
-                      $OPTIONS 2>&1)"
-#                      -menu-anims +fonts 2>&1)   " 
-      #echo $RES                
-      echo $RES | grep -q "Authentication failure" &&                                                  \
-      yad --center --image="error" --window-icon="error" --title "Authentication failure"              \
-      --text="<b>Could not authenticate to server\!</b>\n\n<i>Please check your password.</i>"         \
-        --text-align=center --width=320 --button=gtk-ok --buttons-layout=spread && continue 
-      echo $RES | grep -q "connection failure" &&                                                      \
-      yad --center --image="error" --window-icon="error" --title "Connection failure"                  \
-      --text="<b>Could not connect to the server\!</b>\n\n<i>Please check the network connection.</i>" \
-      --text-align=center --width=320 --button=gtk-ok --buttons-layout=spread && continue
-      
-      if [ "$varLog" = "TRUE" ]; then
-          yad --text "$RES" --title "Log of Events" --width=600 --wrap --no-buttons
+                      $OPTIONS \
+                       -menu-anims 2>&1)
+
+       TEST="xfreerdp $MULTIMON $GEOMETRY /v:$SERVER:$PORT /u:$LOGIN /p:$PASSWORD /sound  /from-stdin  /decorations /window-drag \
+                      /compression 	\
+                      $MODEM \
+                      $FONTS \
+                      $CERTOK \
+                      $OPTIONS -menu-anims"
+
+      if [ "$1" == "-test" ]; then
+          echo "Command will be: "
+           echo $TEST
+      else
+              echo $RES | grep -q "Authentication failure" &&                                                  \
+              yad --center --image="error" --window-icon="error" --title "Authentication failure"              \
+              --text="<b>Could not authenticate to server\!</b>\n\n<i>Please check your password.</i>"         \
+                --text-align=center --width=320 --button=gtk-ok --buttons-layout=spread && continue
+              echo $RES | grep -q "connection failure" &&                                                      \
+              yad --center --image="error" --window-icon="error" --title "Connection failure"                  \
+              --text="<b>Could not connect to the server\!</b>\n\n<i>Please check the network connection.</i>" \
+              --text-align=center --width=320 --button=gtk-ok --buttons-layout=spread && continue
+
+              if [ "$varLog" = "TRUE" ]; then
+                  yad --text "$RES" --title "Log of Events" --width=600 --wrap --no-buttons
+              fi
       fi
-      
       break
   done
 
-
   #####################################################################################
-

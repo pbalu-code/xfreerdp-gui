@@ -61,8 +61,8 @@
       varFONTS=
     varLog=
     [ -n "$USER" ] && until xdotool search "xfreerdp-gui" windowactivate key Right Tab 2>/dev/null ; do sleep 0.03; done &
-      FORMULARY=$(yad --center --width=450 \
-          --window-icon="gtk-execute" --image="debian-logo" --item-separator=","                                              \
+      FORMULARY=$(yad --center --width=500 \
+          --window-icon="gtk-execute" --image="FreeRDP_Icon.png" --item-separator=","                                              \
           --title "xfreerdp-gui"                                                                                              \
           --form                                                                                                              \
           --field="Server*" $SERVER "IP-Address"                                                               \

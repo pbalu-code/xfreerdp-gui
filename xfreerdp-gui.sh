@@ -67,7 +67,7 @@
           --form                                                                                                              \
           --field="Server*" $SERVER "IP-Address"                                                               \
           --field="Port*"  $PORT "3389"                                                                                        \
-          --field="Domain*" $DOMAIN "Your AD domain."                                                                            \
+          --field="Domain*" $DOMAIN "Your.AD.domain"                                                                            \
           --field="Username*" $LOGIN "Login Name"                                                                  \
           --field="Password*":H $PASSWORD ""                                                                                  \
           --field="Resolution":CBE $RESOLUTION "$wxh1,$wxh2,640x480,720x480,800x600,1024x768,1280x1024,1600x1200,1920x1080,"  \

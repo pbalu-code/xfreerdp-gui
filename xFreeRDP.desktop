@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=xFreeRDP
+Exec=/opt/xfreerdp/xfreerdp-gui.sh
+Type=Application
+Terminal=false
+Encoding=UTF-8
+Icon=/opt/xfreerdp/FreeRDP_Icon.png
+metadata::trusted=yes

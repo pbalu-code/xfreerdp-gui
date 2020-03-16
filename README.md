@@ -1,7 +1,7 @@
 # xfreerdp-gui
 Extended GUI for CLI based xfreerdp
 
-This scripts are originally based on Prof. Wyllian Bezerra da Silva at Federal University of Santa Catarina (UFSC)'s repository: https://github.com/wyllianbs/xfreerdp-gui **with few minor updates**. 
+These scripts are originally based on Prof. Wyllian Bezerra da Silva at Federal University of Santa Catarina (UFSC)'s repository: https://github.com/wyllianbs/xfreerdp-gui **with few minor updates**. 
 
 What are:
 ---------
